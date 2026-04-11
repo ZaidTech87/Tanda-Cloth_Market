@@ -72,6 +72,14 @@ const Login = () => {
               onChange={handleChange}
               required
             />
+            <div style={{ textAlign: 'right', marginTop: '5px', marginBottom: '20px' }}>
+              <span
+                style={{ color: '#2563eb', cursor: 'pointer', fontSize: '10px' }}
+                onClick={() => navigate('/forgot-password')}
+              >
+                Forgot Password?
+              </span>
+            </div>
           </div>
 
           <button type="submit" className="btn-primary btn-full" disabled={loading}>

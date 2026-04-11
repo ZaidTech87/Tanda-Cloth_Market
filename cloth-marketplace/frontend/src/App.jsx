@@ -10,6 +10,9 @@ import CreatePost from './pages/CreatePost';
 import Profile from './pages/Profile';
 import Messages from './pages/Messages';
 import Chat from './pages/Chat';
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword';
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -116,6 +119,8 @@ function AppRoutes() {
       
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
     </Routes>
   );
 }
