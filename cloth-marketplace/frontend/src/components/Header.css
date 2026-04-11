@@ -1,0 +1,141 @@
+.header {
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.logo-icon {
+  font-size: 28px;
+}
+
+.logo-text {
+  display: none;
+}
+
+.header-nav {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+.nav-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+.nav-item svg {
+  font-size: 18px;
+}
+
+.nav-item span {
+  display: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.user-location {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.logout-btn {
+  background-color: var(--hover-bg);
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #fee;
+  color: #c33;
+}
+
+.logout-btn svg {
+  font-size: 18px;
+}
+
+@media (min-width: 640px) {
+  .logo-text {
+    display: inline;
+  }
+  
+  .nav-item span {
+    display: inline;
+  }
+}
+
+@media (min-width: 768px) {
+  .user-info {
+    display: flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-container {
+    padding: 8px 12px;
+  }
+  
+  .nav-item {
+    padding: 8px 10px;
+  }
+}
