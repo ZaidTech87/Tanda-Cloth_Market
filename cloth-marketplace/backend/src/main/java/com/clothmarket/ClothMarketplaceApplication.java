@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ClothMarketplaceApplication {
+public class ClothMarketplaceApplication{
     
     public static void main(String[] args) {
         SpringApplication.run(ClothMarketplaceApplication.class, args);
