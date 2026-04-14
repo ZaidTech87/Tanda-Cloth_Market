@@ -7,6 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -52,4 +58,24 @@ public class UserController {
     }
     
     private record ErrorResponse(String message) {}
+    @PostMapping("/{userId}/upload-photo")
+    public ResponseEntity<?> uploadPhoto(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
+        try {
+            // Path fix karein: Aapke project root ke 'uploads/posts' ki tarah 'uploads/profiles' banayein
+            String uploadDir = "uploads/profiles/";
+            File directory = new File(uploadDir);
+            if (!directory.exists()) directory.mkdirs();
+
+            String fileName = "user_" + userId + ".jpg";
+            Path path = Paths.get(uploadDir + fileName);
+
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            // DB Update: user.setProfilePic(fileName) logic yahan aayega
+
+            return ResponseEntity.ok().body("Uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
