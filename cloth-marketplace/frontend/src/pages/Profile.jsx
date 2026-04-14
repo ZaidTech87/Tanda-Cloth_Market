@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import PostCard from '../components/PostCard';
 import { FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 import './Profile.css';
+import ProfileHeader from '../components/ProfileHeader';
 
 const Profile = () => {
   const { userId } = useParams();
@@ -64,7 +65,7 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <Header />
-      
+      <ProfileHeader user={currentUser} />
       <div className="profile-container">
         {/* Profile Header */}
         <div className="profile-header">

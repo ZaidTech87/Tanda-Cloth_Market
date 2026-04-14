@@ -89,6 +89,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { postAPI } from '../services/api';
 import PostCard from '../components/PostCard';
 import Header from '../components/Header';
+
 import './Feed.css';
 
 const Feed = () => {
@@ -97,10 +98,11 @@ const Feed = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadPosts = useCallback(async () => {
-    // Agar loading chal raha hai ya data khatam ho gaya hai toh return karein
-    if (loading || !hasMore) return;
+  // Static user data for testing
 
+
+  const loadPosts = useCallback(async () => {
+    if (loading || !hasMore) return;
     setLoading(true);
     try {
       const response = await postAPI.getFeed(page, 10);
@@ -109,7 +111,6 @@ const Feed = () => {
       if (!newPosts || newPosts.length === 0) {
         setHasMore(false);
       } else {
-        // Fix: Duplicate posts filter karne ke liye (Safety check)
         setPosts(prev => {
           const existingIds = new Set(prev.map(p => p.id));
           const uniqueNewPosts = newPosts.filter(p => !existingIds.has(p.id));
@@ -124,32 +125,28 @@ const Feed = () => {
     }
   }, [page, loading, hasMore]);
 
-  // Initial load: Sirf mount par ek baar chalega
   useEffect(() => {
     loadPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Logic for infinite scroll
-      if (
-        window.innerHeight + document.documentElement.scrollTop
-        >= document.documentElement.offsetHeight - 100
-      ) {
+      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 100) {
         if (!loading && hasMore) {
           loadPosts();
         }
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadPosts, loading, hasMore]); // Dependencies sahi ki gayi hain
+  }, [loadPosts, loading, hasMore]);
 
   return (
     <div className="feed-page">
+      {/* 1. Navbar Header */}
       <Header />
+
+
 
       <div className="feed-container">
         <div className="feed-content">
@@ -161,7 +158,6 @@ const Feed = () => {
             </div>
           )}
 
-          {/* Fixed Key: Agar id duplicate ho tab bhi error nahi aayega */}
           {posts.map((post, index) => (
             <PostCard key={`${post.id}-${index}`} post={post} />
           ))}
