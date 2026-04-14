@@ -17,12 +17,19 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-    
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve uploaded files
+        // Current directory ka absolute path nikaalein
+        String rootPath = System.getProperty("user.dir");
+        String uploadPath = "file:" + rootPath + "/uploads/";
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
+                .addResourceLocations(uploadPath)
+                .setCachePeriod(0); // Cache issue khatam karne ke liye
+
+        // Console mein check karne ke liye rasta print karein
+        System.out.println("Spring is looking for files in: " + uploadPath);
     }
 
 }
