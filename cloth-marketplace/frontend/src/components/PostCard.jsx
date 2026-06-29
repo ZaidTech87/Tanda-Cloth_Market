@@ -122,7 +122,7 @@ const PostCard = ({ post }) => {
   const navigate = useNavigate();
 
   // Backend URL
-  const baseURL = 'http://localhost:8080';
+  const baseURL = 'http://localhost:8080/api';
 
   // Navigate to chat
   const handleConnect = () => {

@@ -10,7 +10,7 @@ const Messages = () => {
   const navigate = useNavigate();
   const [chatUsers, setChatUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const baseURL = 'http://localhost:8080';
+  const baseURL = 'http://localhost:8080/api';
 
   useEffect(() => {
     loadChatUsers();

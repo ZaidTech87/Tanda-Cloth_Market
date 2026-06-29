@@ -20,7 +20,7 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const baseURL = 'http://localhost:8080';
+  const baseURL = 'http://localhost:8080/api';
 
   useEffect(() => {
     loadChat();
