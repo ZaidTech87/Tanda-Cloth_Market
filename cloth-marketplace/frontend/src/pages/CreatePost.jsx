@@ -116,7 +116,7 @@ const CreatePost = () => {
               </div>
 
               <div className="form-group">
-                <label>Price (₹)</label>
+                <label>Price(₹)/unit </label>
                 <input
                   type="number"
                   name="price"
@@ -130,7 +130,7 @@ const CreatePost = () => {
             </div>
 
             <div className="form-group">
-              <label>Quantity (units)</label>
+              <label>Available Quantity (units)</label>
               <input
                 type="number"
                 name="quantity"
