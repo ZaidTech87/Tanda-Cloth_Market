@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+export const API_BASE_URL = 'http://localhost:8080/api';
+
+export const getMediaUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `${API_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -13,6 +19,8 @@ const api = axios.create({
 export const authAPI = {
   signup: (data) => api.post('/auth/signup', data),
   login: (data) => api.post('/auth/login', data),
+  forgotPassword: (mobile) => api.post('/auth/forgot-password', { mobile }),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
 };
 
 // User APIs
@@ -48,9 +56,9 @@ export const postAPI = {
 
 // Message APIs
 export const messageAPI = {
-  sendTextMessage: (senderId, receiverId, message) => 
+  sendTextMessage: (senderId, receiverId, message) =>
     api.post('/messages/send/text', null, {
-      params: { senderId, receiverId, message }
+      params: { senderId, receiverId, message },
     }),
   sendVoiceMessage: (senderId, receiverId, voiceFile) => {
     const formData = new FormData();
@@ -61,7 +69,7 @@ export const messageAPI = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  getChatMessages: (userId1, userId2) => 
+  getChatMessages: (userId1, userId2) =>
     api.get('/messages/chat', { params: { userId1, userId2 } }),
   getChatUsers: (userId) => api.get(`/messages/chat-users/${userId}`),
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { messageAPI } from '../services/api';
+import { messageAPI, getMediaUrl } from '../services/api';
 import Header from '../components/Header';
 import './Messages.css';
 
@@ -10,7 +10,6 @@ const Messages = () => {
   const navigate = useNavigate();
   const [chatUsers, setChatUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const baseURL = 'http://localhost:8080/api';
 
   useEffect(() => {
     loadChatUsers();
@@ -68,7 +67,7 @@ const Messages = () => {
               >
                 <div className="chat-avatar">
                   {chatUser.profileImage ? (
-                    <img src={baseURL + chatUser.profileImage} alt={chatUser.name} />
+                    <img src={getMediaUrl(chatUser.profileImage)} alt={chatUser.name} />
                   ) : (
                     <div className="avatar-placeholder">
                       {chatUser.name?.charAt(0).toUpperCase()}

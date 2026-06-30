@@ -56,41 +56,59 @@ public class AuthController {
     }
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
-        String mobile = request.get("mobile");
+        try {
+            String mobile = request.get("mobile");
+            if (mobile == null || mobile.isBlank()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("Mobile number is required"));
+            }
 
-        User user = userRepository.findByMobile(mobile)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            userRepository.findByMobile(mobile)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String otp = String.valueOf((int)(Math.random() * 900000) + 100000);
+            String otp = String.valueOf((int) (Math.random() * 900000) + 100000);
+            otpStorage.put(mobile, otp);
 
-        otpStorage.put(mobile, otp);
+            System.out.println("OTP for " + mobile + ": " + otp);
 
-        System.out.println("OTP: " + otp); // for testing
-
-        return ResponseEntity.ok("OTP sent");
+            return ResponseEntity.ok("OTP sent");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
     }
 
-
-    // ================= RESET PASSWORD =================
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
-        String mobile = request.get("mobile");
-        String otp = request.get("otp");
-        String newPassword = request.get("newPassword");
+        try {
+            String mobile = request.get("mobile");
+            String otp = request.get("otp");
+            String newPassword = request.get("newPassword");
 
-        if (!otpStorage.containsKey(mobile) || !otpStorage.get(mobile).equals(otp)) {
-            return ResponseEntity.badRequest().body("Invalid OTP");
+            if (mobile == null || mobile.isBlank()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("Mobile number is required"));
+            }
+            if (otp == null || otp.isBlank()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("OTP is required"));
+            }
+            if (newPassword == null || newPassword.length() < 6) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("Password must be at least 6 characters"));
+            }
+            if (!otpStorage.containsKey(mobile) || !otpStorage.get(mobile).equals(otp)) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("Invalid OTP"));
+            }
+
+            User user = userRepository.findByMobile(mobile)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            otpStorage.remove(mobile);
+
+            return ResponseEntity.ok("Password reset successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
         }
-
-        User user = userRepository.findByMobile(mobile)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-
-        otpStorage.remove(mobile);
-
-        return ResponseEntity.ok("Password reset successful");
     }
 
     // ================= ERROR =================

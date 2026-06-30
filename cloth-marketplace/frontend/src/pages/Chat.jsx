@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { messageAPI, userAPI } from '../services/api';
+import { messageAPI, userAPI, getMediaUrl } from '../services/api';
 import { FaArrowLeft, FaPaperPlane, FaMicrophone, FaStop } from 'react-icons/fa';
 import './Chat.css';
 
@@ -20,7 +20,6 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const baseURL = 'http://localhost:8080/api';
 
   useEffect(() => {
     loadChat();
@@ -146,7 +145,7 @@ const Chat = () => {
         <div className="chat-header-user" onClick={() => navigate(`/profile/${receiverId}`)}>
           <div className="chat-header-avatar">
             {receiverUser?.profileImage ? (
-              <img src={baseURL + receiverUser.profileImage} alt={receiverUser.name} />
+              <img src={getMediaUrl(receiverUser.profileImage)} alt={receiverUser.name} />
             ) : (
               <div className="avatar-placeholder">
                 {receiverUser?.name?.charAt(0).toUpperCase()}
@@ -170,7 +169,7 @@ const Chat = () => {
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`message ${msg.senderId === user.userId ? 'sent' : 'received'}`}
+              className={`message ${Number(msg.senderId) === Number(user.userId) ? 'sent' : 'received'}`}
             >
               {msg.messageType === 'text' ? (
                 <div className="message-bubble">
@@ -179,7 +178,7 @@ const Chat = () => {
                 </div>
               ) : (
                 <div className="message-bubble voice-message">
-                  <audio controls src={baseURL + msg.voiceUrl} />
+                  <audio controls src={getMediaUrl(msg.voiceUrl)} />
                   <span className="message-time">{formatTime(msg.createdAt)}</span>
                 </div>
               )}
