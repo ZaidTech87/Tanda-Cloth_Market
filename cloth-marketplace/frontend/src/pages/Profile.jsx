@@ -40,6 +40,37 @@ const Profile = () => {
 
   const isOwnProfile = currentUser?.userId === parseInt(userId, 10);
 
+  const handleDeletePost = async (postId) => {
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+
+      await postAPI.deletePost(
+        postId,
+        currentUser.userId
+      );
+
+      setPosts((prevPosts) =>
+        prevPosts.filter(
+          (post) => post.id !== postId
+        )
+      );
+
+      alert("Post deleted successfully");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Failed to delete post");
+    }
+  };
+
   const handleAvatarClick = () => {
     if (isOwnProfile && !uploadingImage) {
       fileInputRef.current?.click();
@@ -183,9 +214,14 @@ const Profile = () => {
             </div>
           ) : (
             <div className="posts-grid">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
+             {posts.map((post) => (
+               <PostCard
+                 key={post.id}
+                 post={post}
+                 isOwner={isOwnProfile}
+                 onDelete={handleDeletePost}
+               />
+             ))}
             </div>
           )}
         </div>

@@ -66,6 +66,19 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(
+            @PathVariable Long postId,
+            @RequestParam Long userId) {
+
+        try {
+            postService.deletePost(postId, userId);
+            return ResponseEntity.ok("Post deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse(e.getMessage()));
+        }
+    }
     
     private record ErrorResponse(String message) {}
 }

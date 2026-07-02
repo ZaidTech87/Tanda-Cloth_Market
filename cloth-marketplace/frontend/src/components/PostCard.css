@@ -8,7 +8,7 @@
 
 .post-card:hover {
   box-shadow: var(--shadow-lg);
-}
+}x``
 
 .post-header {
   padding: 16px;
@@ -166,13 +166,86 @@
   .post-actions {
     padding: 12px;
   }
-  
+
   .post-avatar {
     width: 40px;
     height: 40px;
   }
-  
+
   .avatar-placeholder {
     font-size: 18px;
   }
+}
+
+
+
+/* Description */
+.post-description p {
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.post-description p.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.post-description p.expanded {
+    display: block;
+}
+
+.see-more {
+    color: #1877f2;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 6px;
+    display: inline-block;
+}
+
+/* Equal image size */
+.post-media-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Equal video size */
+.post-media-video {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Keep button at bottom */
+.post-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-actions {
+    margin-top: auto;
+}
+.post-delete-container{
+    margin-top:15px;
+}
+
+.btn-delete{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#e53935;
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-delete:hover{
+    background:#c62828;
 }
