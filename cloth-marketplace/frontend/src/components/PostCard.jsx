@@ -1,202 +1,8 @@
-// import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { FaMapMarkerAlt, FaRupeeSign } from 'react-icons/fa';
-// import { getMediaUrl } from '../services/api';
-// import './PostCard.css';
-//
-// const PostCard = ({
-//   post,
-//   isOwner = false,
-//   onDelete
-// }) => {
-//   const navigate = useNavigate();
-//   const [expanded, setExpanded] = useState(false);
-//
-//   const handleConnect = () => {
-//     if (post.userId) {
-//       navigate(`/chat/${post.userId}`);
-//     }
-//   };
-//
-//   const handleProfileClick = () => {
-//     if (post.userId) {
-//       navigate(`/profile/${post.userId}`);
-//     }
-//   };
-// const handleDelete = () => {
-//   if (onDelete) {
-//     onDelete(post.id);
-//   }
-// };
-//
-//   const formatDate = (dateString) => {
-//     if (!dateString) return 'Recently';
-//
-//     const date = new Date(dateString);
-//     if (isNaN(date.getTime())) return 'Recently';
-//
-//     const now = new Date();
-//     const diffMs = now - date;
-//     const diffMins = Math.floor(diffMs / 60000);
-//     const diffHours = Math.floor(diffMs / 3600000);
-//     const diffDays = Math.floor(diffMs / 86400000);
-//
-//     if (diffMins < 1) return 'Just now';
-//     if (diffMins < 60) return `${diffMins}m ago`;
-//     if (diffHours < 24) return `${diffHours}h ago`;
-//     if (diffDays < 7) return `${diffDays}d ago`;
-//
-//     return date.toLocaleDateString();
-//   };
-//
-//   return (
-//     <div className="post-card">
-//
-// <div className="post-header">
-//
-//   <div
-//     className="post-user-info"
-//     onClick={handleProfileClick}
-//     style={{ cursor: 'pointer' }}
-//   >
-//
-//     <div className="post-avatar">
-//       {post.userProfileImage ? (
-//         <img
-//           src={getMediaUrl(post.userProfileImage)}
-//           alt={post.userName || 'User'}
-//           onError={(e) => {
-//             e.target.style.display = 'none';
-//           }}
-//         />
-//       ) : (
-//         <div className="avatar-placeholder">
-//           {post.userName?.charAt(0)?.toUpperCase() || 'U'}
-//         </div>
-//       )}
-//     </div>
-//
-//     <div className="post-user-details">
-//       <h3 className="post-user-name">
-//         {post.userName || 'Unknown User'}
-//       </h3>
-//
-//       <div className="post-meta">
-//         {post.userLocation && (
-//           <>
-//             <FaMapMarkerAlt className="location-icon" />
-//             <span className="post-location">
-//               {post.userLocation}
-//             </span>
-//           </>
-//         )}
-//
-//         <span className="post-time">
-//           • {formatDate(post.createdAt)}
-//         </span>
-//       </div>
-//     </div>
-//
-//   </div>
-//
-//   {isOwner && (
-//     <button
-//       className="delete-icon-btn"
-//       onClick={handleDelete}
-//       title="Delete Post"
-//     >
-//      🗑⃨̅
-//     </button>
-//   )}
-//
-// </div>
-//       {post.description && (
-//         <div className="post-description">
-//           <p className={expanded ? "expanded" : "collapsed"}>
-//             {post.description}
-//           </p>
-//
-//           {post.description.length > 180 && (
-//             <span
-//               className="see-more"
-//               onClick={() => setExpanded(!expanded)}
-//             >
-//               {expanded ? "See Less" : "See More"}
-//             </span>
-//           )}
-//         </div>
-//       )}
-//
-//       {post.mediaUrl && (
-//         <div className="post-media">
-//           {post.mediaType === 'image' && (
-//             <img
-//               src={getMediaUrl(post.mediaUrl)}
-//               alt="Post media"
-//               className="post-media-image"
-//               onError={(e) => {
-//                 e.target.style.display = 'none';
-//               }}
-//             />
-//           )}
-//
-//           {post.mediaType === 'video' && (
-//             <video controls className="post-media-video">
-//               <source src={getMediaUrl(post.mediaUrl)} />
-//               Your browser does not support the video tag.
-//             </video>
-//           )}
-//         </div>
-//       )}
-//
-//       <div className="post-details">
-//         {post.clothType && (
-//           <div className="detail-item">
-//             <span className="detail-label">Type:</span>
-//             <span className="detail-value">{post.clothType}</span>
-//           </div>
-//         )}
-//
-//         {post.price && (
-//           <div className="detail-item">
-//             <span className="detail-label">Price:</span>
-//             <span className="detail-value">
-//               <FaRupeeSign className="rupee-icon" />
-//               {Number(post.price).toLocaleString()}
-
-
-
-//             </span>
-//           </div>
-//         )}
-//
-//         {post.quantity && (
-//           <div className="detail-item">
-//             <span className="detail-label">Quantity:</span>
-//             <span className="detail-value">{post.quantity} units</span>
-//           </div>
-//         )}
-//       </div>
-//
-//      {!isOwner && (
-//        <div className="post-actions">
-//          <button
-//            className="btn-connect"
-//            onClick={handleConnect}
-//          >
-//            Connect
-//          </button>
-//        </div>
-//      )}
-//     </div>
-//   );
-// };
-//
-// export default PostCard;
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { postAPI } from '../services/api';
+import { FaMapMarkerAlt, FaTrash } from 'react-icons/fa';
 import './PostCard.css';
 
 // ===== FB STYLE DATE =====
@@ -205,20 +11,16 @@ const getTimeAgo = (dateInput) => {
 
   let postDate;
 
-  // ✅ Array format handle karo: [2024, 11, 15, 10, 30, 45]
   if (Array.isArray(dateInput)) {
     const [year, month, day, hour = 0, minute = 0, second = 0] = dateInput;
-    // month - 1 kyunki JS me January = 0
     postDate = new Date(year, month - 1, day, hour, minute, second);
   } else {
-    // ✅ String format handle karo: "2024-11-15T10:30:45"
     postDate = new Date(dateInput);
   }
 
-  // ✅ Agar phir bhi invalid date aaye to empty string
   if (isNaN(postDate.getTime())) return '';
 
-  const now = new Date();
+  const now         = new Date();
   const diffMs      = now - postDate;
   const diffSeconds = Math.floor(diffMs / 1000);
   const diffMinutes = Math.floor(diffSeconds / 60);
@@ -245,28 +47,68 @@ const getTimeAgo = (dateInput) => {
   return `${diffYears}y ago`;
 };
 
-// ===== KITNE CHARACTERS KE BAAD SEE MORE DIKHAO =====
+// ✅ Title ke liye alag helper — crash nahi karega
+const getFullDate = (dateInput) => {
+  if (!dateInput) return '';
+  try {
+    let d;
+    if (Array.isArray(dateInput)) {
+      const [year, month, day, hour = 0, minute = 0, second = 0] = dateInput;
+      d = new Date(year, month - 1, day, hour, minute, second);
+    } else {
+      d = new Date(dateInput);
+    }
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleString('en-IN');
+  } catch {
+    return '';
+  }
+};
+
 const MAX_LENGTH = 120;
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, onPostDeleted, showDelete = false }) => {
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   const baseURL = 'http://localhost:8080/api';
 
-  // ===== SEE MORE STATE =====
   const [expanded, setExpanded] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const userName         = post.userName         || 'Unknown';
   const userLocation     = post.userLocation     || '';
   const userProfileImage = post.userProfileImage || null;
   const userId           = post.userId;
 
-  const description     = post.description || '';
-  const isLong          = description.length > MAX_LENGTH;
-  const displayText     = expanded
+  const description = post.description || '';
+  const isLong      = description.length > MAX_LENGTH;
+  const displayText = expanded
     ? description
     : description.slice(0, MAX_LENGTH);
 
+  const isOwnPost = Number(currentUser?.userId) === Number(userId);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+
+    try {
+      await postAPI.deletePost(post.id, currentUser.userId);
+
+      if (onPostDeleted) {
+        onPostDeleted(post.id);
+      }
+
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete post. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
   return (
+
     <div className="post-card">
 
       {/* ===== HEADER ===== */}
@@ -307,29 +149,36 @@ const PostCard = ({ post }) => {
                   <span className="meta-dot"> • </span>
                 </>
               )}
+
               <span
                 className="post-date"
-                title={
-                  post.createdAt
-                    ? new Date(post.createdAt).toLocaleString('en-IN')
-                    : ''
-                }
+                title={getFullDate(post.createdAt)}
               >
                 {getTimeAgo(post.createdAt)}
               </span>
             </span>
           </div>
         </div>
+
+
+        {showDelete && isOwnPost && (
+        <button
+          className="delete-icon-btn"
+          onClick={() => setShowDeleteModal(true)}
+          disabled={deleting}
+          title="Delete post"
+        >
+          <FaTrash />
+        </button>
+        )}
       </div>
 
-      {/* ===== DESCRIPTION — FB STYLE SEE MORE ===== */}
+      {/* ===== DESCRIPTION ===== */}
       {description && (
         <div className="post-description">
           <p>
             {displayText}
-            {/* Truncated hai aur expand nahi hua to '...' dikhao */}
             {isLong && !expanded && '... '}
-            {/* See more / See less button */}
             {isLong && (
               <span
                 className="see-more"
@@ -375,12 +224,48 @@ const PostCard = ({ post }) => {
       </div>
 
       {/* ===== CONNECT BUTTON ===== */}
-      <button
-        className="connect-btn"
-        onClick={() => navigate(`/chat/${userId}`)}
-      >
-        Connect
-      </button>
+      {(!showDelete || !isOwnPost) && (
+        <button
+          className="connect-btn"
+          onClick={() => navigate(`/chat/${userId}`)}
+        >
+          Connect
+        </button>
+      )}
+
+{showDeleteModal && (
+  <div
+    className="delete-modal-overlay"
+    onClick={() => setShowDeleteModal(false)}
+  >
+    <div
+      className="delete-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h3>Delete Post</h3>
+
+      <p>Are you sure you want to delete this post?</p>
+
+      <div className="delete-modal-buttons">
+        <button
+          className="cancel-btn"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          className="confirm-delete-btn"
+          onClick={handleDelete}
+          disabled={deleting}
+        >
+          {deleting ? "Deleting..." : "Delete"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
     </div>
   );

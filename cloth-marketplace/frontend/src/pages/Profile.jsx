@@ -27,7 +27,6 @@ const Profile = () => {
     try {
       const userResponse = await userAPI.getUser(userId);
       setProfileUser(userResponse.data);
-
       const postsResponse = await postAPI.getUserPosts(userId);
       setPosts(postsResponse.data);
     } catch (error) {
@@ -40,35 +39,9 @@ const Profile = () => {
 
   const isOwnProfile = currentUser?.userId === parseInt(userId, 10);
 
-  const handleDeletePost = async (postId) => {
-
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this post?"
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-
-      await postAPI.deletePost(
-        postId,
-        currentUser.userId
-      );
-
-      setPosts((prevPosts) =>
-        prevPosts.filter(
-          (post) => post.id !== postId
-        )
-      );
-
-      alert("Post deleted successfully");
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to delete post");
-    }
+  // ✅ Delete handler — sahi jagah (function ke andar, return ke bahar)
+  const handlePostDeleted = (deletedPostId) => {
+    setPosts(prev => prev.filter(p => p.id !== deletedPostId));
   };
 
   const handleAvatarClick = () => {
@@ -88,7 +61,6 @@ const Profile = () => {
       const response = await userAPI.updateProfileImage(userId, file);
       const updatedUser = response.data;
       setProfileUser(updatedUser);
-
       if (isOwnProfile) {
         updateUser({ profileImage: updatedUser.profileImage });
       }
@@ -178,7 +150,6 @@ const Profile = () => {
 
             <div className="profile-details">
               <h1 className="profile-name">{profileUser.name}</h1>
-
               <div className="profile-meta">
                 {profileUser.location && (
                   <div className="meta-item">
@@ -214,14 +185,14 @@ const Profile = () => {
             </div>
           ) : (
             <div className="posts-grid">
-             {posts.map((post) => (
-               <PostCard
-                 key={post.id}
-                 post={post}
-                 isOwner={isOwnProfile}
-                 onDelete={handleDeletePost}
-               />
-             ))}
+              {posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  showDelete={isOwnProfile}
+                  onPostDeleted={handlePostDeleted}
+                />
+              ))}
             </div>
           )}
         </div>
