@@ -35,6 +35,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
 }
 
 .post-avatar img {
@@ -63,11 +64,12 @@
   flex: 1;
 }
 
-.post-user-name {
+.post-username {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
+  display: block;
 }
 
 .post-meta {
@@ -76,18 +78,18 @@
   gap: 6px;
   font-size: 13px;
   color: var(--text-secondary);
+  flex-wrap: wrap;
 }
 
-.location-icon {
+/* ✅ Desktop par bhi dikhega */
+.post-date {
   font-size: 12px;
+  color: #65676b;
+  cursor: default;
 }
 
-.post-location {
-  font-weight: 500;
-}
-
-.post-time {
-  color: var(--text-secondary);
+.meta-dot {
+  color: #65676b;
 }
 
 /* ================= DELETE ICON ================= */
@@ -126,6 +128,19 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+.see-more {
+  color: #1877f2;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: 4px;
+  /* inline rakho taaki '...' ke saath ek hi line me aaye */
+  display: inline;
+}
+
+.see-more:hover {
+  text-decoration: underline;
+}
 
 .post-description p.collapsed {
   display: -webkit-box;
@@ -148,12 +163,33 @@
 
 /* ================= MEDIA ================= */
 
-.post-media-image,
-.post-media-video{
-    width:100%;
-    max-height:600px;
-    object-fit:contain;
+/* ✅ Desktop par bhi dikhega */
+.post-media {
+  width: 100%;
+  overflow: hidden;
 }
+
+.post-image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  display: block;
+}
+
+.post-video {
+  width: 100%;
+  max-height: 500px;
+  display: block;
+}
+
+/* purane class names bhi rakhe — compatibility ke liye */
+.post-media-image,
+.post-media-video {
+  width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+}
+
 /* ================= DETAILS ================= */
 
 .post-details {
@@ -184,8 +220,20 @@
   gap: 2px;
 }
 
-.rupee-icon {
-  font-size: 12px;
+/* ================= PRODUCT INFO ================= */
+
+.post-product-info {
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px solid var(--border-color);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.post-product-info span strong {
+  color: var(--text-primary);
 }
 
 /* ================= ACTION ================= */
@@ -196,7 +244,8 @@
   margin-top: auto;
 }
 
-.btn-connect {
+.btn-connect,
+.connect-btn {
   width: 100%;
   background: var(--primary-color);
   color: white;
@@ -206,52 +255,53 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: .25s;
+  transition: 0.25s;
 }
 
-.btn-connect:hover {
+.btn-connect:hover,
+.connect-btn:hover {
   background: #166fe5;
 }
 
 /* ================= MOBILE ================= */
 
-@media (max-width:640px){
+@media (max-width: 640px) {
 
   .post-header,
   .post-description,
   .post-details,
-  .post-actions{
-      padding:12px;
+  .post-actions,
+  .post-product-info {
+    padding: 12px;
   }
 
-  .post-avatar{
-      width:40px;
-      height:40px;
+  .post-avatar {
+    width: 40px;
+    height: 40px;
   }
 
-  .avatar-placeholder{
-      font-size:18px;
+  .avatar-placeholder {
+    font-size: 18px;
   }
 
- .delete-icon-btn{
-     width:40px;
-     height:40px;
-     border:none;
-     background:#fff;
-     color:#e53935;
-     font-size:22px;
-     border-radius:50%;
-     cursor:pointer;
-     display:flex;
-     align-items:center;
-     justify-content:center;
-     margin-top:6px;
-     margin-right:6px;
-     transition:.3s;
- }
+  .delete-icon-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #fff;
+    color: #e53935;
+    font-size: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+    margin-right: 6px;
+    transition: 0.3s;
+  }
 
- .delete-icon-btn:hover{
-     background:#ffe5e5;
- }
-
+  .delete-icon-btn:hover {
+    background: #ffe5e5;
+  }
 }
