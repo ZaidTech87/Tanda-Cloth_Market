@@ -26,17 +26,23 @@ const Header = () => {
     navigate('/login');
   };
 
-  const handleFeedClick = (e) => {
-
-    e.preventDefault();
-
-    navigate("/", {
-      state: {
-        refreshFeed: Date.now()
-      }
-    });
-
-  };
+//   const handleFeedClick = (e) => {
+//
+//     e.preventDefault();
+//
+//     navigate("/", {
+//       state: {
+//         refreshFeed: Date.now()
+//       }
+//     });
+//
+//   };
+const handleFeedClick = (e) => {
+  e.preventDefault();
+  // navigate() se location.key change hoti hai
+  // Feed.jsx usse detect karke automatically refresh ho jaata hai
+  navigate('/');
+};
 
   return (
 

@@ -1,5 +1,5 @@
 package com.clothmarket.model;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +43,7 @@ public class Post {
     private String clothType;
     
     @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
     @Transient
@@ -53,6 +54,7 @@ public class Post {
     
     @Transient
     private String userProfileImage;
+
     
     @PrePersist
     protected void onCreate() {
