@@ -1,149 +1,3 @@
-// import React from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { FaMapMarkerAlt, FaRupeeSign } from 'react-icons/fa';
-// import { getMediaUrl } from '../services/api';
-// import './PostCard.css';
-//
-// const PostCard = ({ post }) => {
-//   const navigate = useNavigate();
-//
-//   const handleConnect = () => {
-//     if (post.userId) {
-//       navigate(`/chat/${post.userId}`);
-//     }
-//   };
-//
-//   const handleProfileClick = () => {
-//     if (post.userId) {
-//       navigate(`/profile/${post.userId}`);
-//     }
-//   };
-//
-//   const formatDate = (dateString) => {
-//     if (!dateString) return 'Recently';
-//
-//     const date = new Date(dateString);
-//     if (isNaN(date.getTime())) return 'Recently';
-//
-//     const now = new Date();
-//     const diffMs = now - date;
-//     const diffMins = Math.floor(diffMs / 60000);
-//     const diffHours = Math.floor(diffMs / 3600000);
-//     const diffDays = Math.floor(diffMs / 86400000);
-//
-//     if (diffMins < 1) return 'Just now';
-//     if (diffMins < 60) return `${diffMins}m ago`;
-//     if (diffHours < 24) return `${diffHours}h ago`;
-//     if (diffDays < 7) return `${diffDays}d ago`;
-//
-//     return date.toLocaleDateString();
-//   };
-//
-//   return (
-//     <div className="post-card">
-//       <div className="post-header">
-//         <div
-//           className="post-user-info"
-//           onClick={handleProfileClick}
-//           style={{ cursor: 'pointer' }}
-//         >
-//           <div className="post-avatar">
-//             {post.userProfileImage ? (
-//               <img
-//                 src={getMediaUrl(post.userProfileImage)}
-//                 alt={post.userName || 'User'}
-//                 onError={(e) => {
-//                   e.target.style.display = 'none';
-//                 }}
-//               />
-//             ) : (
-//               <div className="avatar-placeholder">
-//                 {post.userName?.charAt(0)?.toUpperCase() || 'U'}
-//               </div>
-//             )}
-//           </div>
-//
-//           <div className="post-user-details">
-//             <h3 className="post-user-name">{post.userName || 'Unknown User'}</h3>
-//             <div className="post-meta">
-//               {post.userLocation && (
-//                 <>
-//                   <FaMapMarkerAlt className="location-icon" />
-//                   <span className="post-location">{post.userLocation}</span>
-//                 </>
-//               )}
-//               <span className="post-time">• {formatDate(post.createdAt)}</span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//
-//       {post.description && (
-//         <div className="post-description">
-//           <p>{post.description}</p>
-//         </div>
-//       )}
-//
-//       {post.mediaUrl && (
-//         <div className="post-media">
-//           {post.mediaType === 'image' && (
-//             <img
-//               src={getMediaUrl(post.mediaUrl)}
-//               alt="Post media"
-//               className="post-media-image"
-//               onError={(e) => {
-//                 e.target.style.display = 'none';
-//               }}
-//             />
-//           )}
-//
-//           {post.mediaType === 'video' && (
-//             <video controls className="post-media-video">
-//               <source src={getMediaUrl(post.mediaUrl)} />
-//               Your browser does not support the video tag.
-//             </video>
-//           )}
-//         </div>
-//       )}
-//
-//       <div className="post-details">
-//         {post.clothType && (
-//           <div className="detail-item">
-//             <span className="detail-label">Type:</span>
-//             <span className="detail-value">{post.clothType}</span>
-//           </div>
-//         )}
-//
-//         {post.price && (
-//           <div className="detail-item">
-//             <span className="detail-label">Price:</span>
-//             <span className="detail-value">
-//               <FaRupeeSign className="rupee-icon" />
-//               {Number(post.price).toLocaleString()}
-//             </span>
-//           </div>
-//         )}
-//
-//         {post.quantity && (
-//           <div className="detail-item">
-//             <span className="detail-label">Quantity:</span>
-//             <span className="detail-value">{post.quantity} units</span>
-//           </div>
-//         )}
-//       </div>
-//
-//       <div className="post-actions">
-//         <button className="btn-connect" onClick={handleConnect}>
-//           Connect
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-//
-// export default PostCard;
-
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaRupeeSign } from 'react-icons/fa';
@@ -197,44 +51,65 @@ const handleDelete = () => {
 
   return (
     <div className="post-card">
-      <div className="post-header">
-        <div
-          className="post-user-info"
-          onClick={handleProfileClick}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="post-avatar">
-            {post.userProfileImage ? (
-              <img
-                src={getMediaUrl(post.userProfileImage)}
-                alt={post.userName || 'User'}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="avatar-placeholder">
-                {post.userName?.charAt(0)?.toUpperCase() || 'U'}
-              </div>
-            )}
-          </div>
 
-          <div className="post-user-details">
-            <h3 className="post-user-name">{post.userName || 'Unknown User'}</h3>
+<div className="post-header">
 
-            <div className="post-meta">
-              {post.userLocation && (
-                <>
-                  <FaMapMarkerAlt className="location-icon" />
-                  <span className="post-location">{post.userLocation}</span>
-                </>
-              )}
-              <span className="post-time">• {formatDate(post.createdAt)}</span>
-            </div>
-          </div>
+  <div
+    className="post-user-info"
+    onClick={handleProfileClick}
+    style={{ cursor: 'pointer' }}
+  >
+
+    <div className="post-avatar">
+      {post.userProfileImage ? (
+        <img
+          src={getMediaUrl(post.userProfileImage)}
+          alt={post.userName || 'User'}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      ) : (
+        <div className="avatar-placeholder">
+          {post.userName?.charAt(0)?.toUpperCase() || 'U'}
         </div>
-      </div>
+      )}
+    </div>
 
+    <div className="post-user-details">
+      <h3 className="post-user-name">
+        {post.userName || 'Unknown User'}
+      </h3>
+
+      <div className="post-meta">
+        {post.userLocation && (
+          <>
+            <FaMapMarkerAlt className="location-icon" />
+            <span className="post-location">
+              {post.userLocation}
+            </span>
+          </>
+        )}
+
+        <span className="post-time">
+          • {formatDate(post.createdAt)}
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  {isOwner && (
+    <button
+      className="delete-icon-btn"
+      onClick={handleDelete}
+      title="Delete Post"
+    >
+     🗑⃨̅
+    </button>
+  )}
+
+</div>
       {post.description && (
         <div className="post-description">
           <p className={expanded ? "expanded" : "collapsed"}>
@@ -299,22 +174,17 @@ const handleDelete = () => {
           </div>
         )}
       </div>
-      {isOwner && (
-        <div className="post-delete-container">
-          <button
-            className="btn-delete"
-            onClick={handleDelete}
-          >
-            🗑 Delete Post
-          </button>
-        </div>
-      )}
 
-      <div className="post-actions">
-        <button className="btn-connect" onClick={handleConnect}>
-          Connect
-        </button>
-      </div>
+     {!isOwner && (
+       <div className="post-actions">
+         <button
+           className="btn-connect"
+           onClick={handleConnect}
+         >
+           Connect
+         </button>
+       </div>
+     )}
     </div>
   );
 };
