@@ -47,6 +47,7 @@ const getTimeAgo = (dateInput) => {
   return `${diffYears}y ago`;
 };
 
+
 // ✅ Title ke liye alag helper — crash nahi karega
 const getFullDate = (dateInput) => {
   if (!dateInput) return '';
@@ -75,6 +76,7 @@ const PostCard = ({ post, onPostDeleted, showDelete = false }) => {
   const [expanded, setExpanded] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [previewMedia, setPreviewMedia] = useState(null);
 
   const userName         = post.userName         || 'Unknown';
   const userLocation     = post.userLocation     || '';
@@ -195,16 +197,19 @@ const PostCard = ({ post, onPostDeleted, showDelete = false }) => {
       {post.mediaUrl && (
         <div className="post-media">
           {post.mediaType === 'video' ? (
-            <video
-              src={baseURL + post.mediaUrl}
-              controls
-              className="post-video"
-            />
+           <video
+               src={baseURL + post.mediaUrl}
+               controls
+               className="post-video"
+               onClick={() => setPreviewMedia("video")}
+           />
           ) : (
             <img
-              src={baseURL + post.mediaUrl}
-              alt="Post media"
-              className="post-image"
+                src={baseURL + post.mediaUrl}
+                alt="Post media"
+                className="post-image"
+                onClick={() => setPreviewMedia("image")}
+                style={{ cursor: "zoom-in" }}
             />
           )}
         </div>
@@ -238,6 +243,38 @@ const PostCard = ({ post, onPostDeleted, showDelete = false }) => {
     className="delete-modal-overlay"
     onClick={() => setShowDeleteModal(false)}
   >
+
+{previewMedia && (
+  <div
+    className="media-preview-overlay"
+    onClick={() => setPreviewMedia(null)}
+  >
+    <button
+      className="close-preview"
+      onClick={() => setPreviewMedia(null)}
+    >
+      ✕
+    </button>
+
+    {previewMedia === "image" ? (
+      <img
+        src={baseURL + post.mediaUrl}
+        className="preview-image"
+        onClick={(e) => e.stopPropagation()}
+        alt="Preview"
+      />
+    ) : (
+      <video
+        src={baseURL + post.mediaUrl}
+        controls
+        autoPlay
+        className="preview-video"
+        onClick={(e) => e.stopPropagation()}
+      />
+    )}
+  </div>
+)}
+
     <div
       className="delete-modal"
       onClick={(e) => e.stopPropagation()}

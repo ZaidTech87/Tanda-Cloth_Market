@@ -387,3 +387,36 @@
     opacity: 1;
   }
 }
+
+
+.media-preview-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+}
+
+.preview-image{
+    max-width:90%;
+    max-height:90%;
+    object-fit:contain;
+}
+
+.preview-video{
+    width:90%;
+    max-height:90%;
+}
+
+.close-preview{
+    position:absolute;
+    top:20px;
+    right:30px;
+    font-size:35px;
+    color:white;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
