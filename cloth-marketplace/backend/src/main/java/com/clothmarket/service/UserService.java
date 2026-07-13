@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,15 +22,25 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final String uploadDir = "uploads/profiles/";
-    
+
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    
+
     public User getUserByMobile(String mobile) {
         return userRepository.findByMobile(mobile)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public List<User> searchUsersByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return List.of();
+        }
+        List<User> users = userRepository.findTop10ByNameContainingIgnoreCase(name.trim());
+        // Password kabhi bhi search results mein leak nahi honi chahiye
+        users.forEach(u -> u.setPassword(null));
+        return users;
     }
 
     public User updateProfileImage(Long userId, MultipartFile file) throws IOException {
