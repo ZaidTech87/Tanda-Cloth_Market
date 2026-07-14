@@ -2,24 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { messageAPI, userAPI, getMediaUrl } from '../services/api';
-import { FaArrowLeft, FaPaperPlane, FaMicrophone, FaStop } from 'react-icons/fa';
+import { FaArrowLeft, FaPaperPlane, FaMicrophone, FaStop, FaPhone, FaVideo } from 'react-icons/fa';
+import { useCall } from '../context/CallContext';
 import './Chat.css';
 
 const Chat = () => {
   const { receiverId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+  const { startCall } = useCall();
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [receiverUser, setReceiverUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [recording, setRecording] = useState(false);
-  
+
+
   const messagesEndRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
+  const audioRefsMap = useRef({}); // { messageId: <audio> element }
+
   const audioChunksRef = useRef([]);
+  const mediaRecorderRef = useRef(null);
+
 
   useEffect(() => {
     loadChat();
@@ -31,13 +37,18 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
+const handleAudioPlay = (playingMsgId) => {
+  Object.entries(audioRefsMap.current).forEach(([msgId, audioEl]) => {
+    if (String(msgId) !== String(playingMsgId) && audioEl && !audioEl.paused) {
+      audioEl.pause();
+    }
+  });
+};
+
   const loadChat = async () => {
     try {
-      // Load receiver user details
       const userResponse = await userAPI.getUser(receiverId);
       setReceiverUser(userResponse.data);
-
-      // Load messages
       await loadMessages();
     } catch (error) {
       console.error('Error loading chat:', error);
@@ -88,14 +99,14 @@ const Chat = () => {
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const audioFile = new File([audioBlob], 'voice.webm', { type: 'audio/webm' });
-        
+
         try {
           await messageAPI.sendVoiceMessage(user.userId, receiverId, audioFile);
           await loadMessages();
         } catch (error) {
           console.error('Error sending voice message:', error);
         }
-        
+
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -116,11 +127,22 @@ const Chat = () => {
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: true 
+      hour12: true
     });
+  };
+
+  // Call buttons chat-header-user ke andar nahi hain, isliye ye click
+  // profile navigation ko trigger nahi karega — but safety ke liye
+  // stopPropagation bhi laga rahe hain.
+  const handleCall = (e, type) => {
+    e.stopPropagation();
+    startCall(
+      { id: receiverId, name: receiverUser?.name, profileImage: receiverUser?.profileImage },
+      type
+    );
   };
 
   if (loading) {
@@ -141,7 +163,7 @@ const Chat = () => {
         <button className="back-btn" onClick={() => navigate('/messages')}>
           <FaArrowLeft />
         </button>
-        
+
         <div className="chat-header-user" onClick={() => navigate(`/profile/${receiverId}`)}>
           <div className="chat-header-avatar">
             {receiverUser?.profileImage ? (
@@ -156,6 +178,25 @@ const Chat = () => {
             <h2>{receiverUser?.name}</h2>
             <p>{receiverUser?.location}</p>
           </div>
+        </div>
+
+        <div className="chat-header-actions">
+          <button
+            type="button"
+            className="call-icon-btn"
+            onClick={(e) => handleCall(e, 'audio')}
+            title="Voice call"
+          >
+            <FaPhone />
+          </button>
+          <button
+            type="button"
+            className="call-icon-btn"
+            onClick={(e) => handleCall(e, 'video')}
+            title="Video call"
+          >
+            <FaVideo />
+          </button>
         </div>
       </div>
 
@@ -177,10 +218,17 @@ const Chat = () => {
                   <span className="message-time">{formatTime(msg.createdAt)}</span>
                 </div>
               ) : (
-                <div className="message-bubble voice-message">
-                  <audio controls src={getMediaUrl(msg.voiceUrl)} />
-                  <span className="message-time">{formatTime(msg.createdAt)}</span>
-                </div>
+               <div className="message-bubble voice-message">
+                 <audio
+                   controls
+                   src={getMediaUrl(msg.voiceUrl)}
+                   ref={(el) => {
+                     if (el) audioRefsMap.current[msg.id] = el;
+                   }}
+                   onPlay={() => handleAudioPlay(msg.id)}
+                 />
+                 <span className="message-time">{formatTime(msg.createdAt)}</span>
+               </div>
               )}
             </div>
           ))
@@ -198,7 +246,7 @@ const Chat = () => {
             onChange={(e) => setNewMessage(e.target.value)}
             disabled={sending || recording}
           />
-          
+
           <div className="input-actions">
             {!recording ? (
               <>
