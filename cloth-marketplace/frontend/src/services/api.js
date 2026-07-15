@@ -180,6 +180,16 @@ export const messageAPI = {
     api.get(
       `/messages/chat-users/${userId}`
     ),
+    getInbox: (userId) =>
+        api.get(`/messages/inbox/${userId}`),
+
+      getUnreadCount: (userId) =>
+        api.get(`/messages/unread-count/${userId}`),
+
+      markAsRead: (fromUserId, toUserId) =>
+        api.post('/messages/mark-read', null, {
+          params: { fromUserId, toUserId },
+        }),
 };
 
 export default api;
