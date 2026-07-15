@@ -50,6 +50,7 @@ const handleAudioPlay = (playingMsgId) => {
       const userResponse = await userAPI.getUser(receiverId);
       setReceiverUser(userResponse.data);
       await loadMessages();
+      await messageAPI.markAsRead(receiverId, user.userId);
     } catch (error) {
       console.error('Error loading chat:', error);
     } finally {

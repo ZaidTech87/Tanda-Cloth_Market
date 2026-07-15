@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa';
 // import { userAPI } from '../services/api';
 import { userAPI, getMediaUrl } from '../services/api';
+import { messageAPI } from '../services/api';
 
 import './Header.css';
 
@@ -24,6 +25,7 @@ const Header = () => {
   const location = useLocation();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -50,6 +52,22 @@ const Header = () => {
       setSearching(false);
       return;
     }
+useEffect(() => {
+  if (!user?.userId) return;
+
+  const loadUnread = async () => {
+    try {
+      const res = await messageAPI.getUnreadCount(user.userId);
+      setUnreadCount(res.data.count || 0);
+    } catch (error) {
+      console.error('Error loading unread count:', error);
+    }
+  };
+
+  loadUnread();
+  const interval = setInterval(loadUnread, 5000);
+  return () => clearInterval(interval);
+}, [user?.userId]);
 
     setSearching(true);
     const timer = setTimeout(async () => {
@@ -135,7 +153,12 @@ const Header = () => {
             to="/messages"
             className={`nav-item ${location.pathname === "/messages" ? "active" : ""}`}
           >
-            <FaComments />
+            <span className="nav-icon-wrap">
+              <FaComments />
+              {unreadCount > 0 && (
+                <span className="nav-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+              )}
+            </span>
             <span>Messages</span>
           </Link>
 
