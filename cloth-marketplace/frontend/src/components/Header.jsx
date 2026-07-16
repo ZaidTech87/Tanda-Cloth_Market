@@ -28,13 +28,14 @@ const Header = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [searching, setSearching] = useState(false);
   const searchBoxRef = useRef(null);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+ const confirmLogout = () => {
+   logout();
+   navigate('/login');
+ };
 
   const handleFeedClick = (e) => {
     e.preventDefault();
@@ -43,58 +44,67 @@ const Header = () => {
     navigate('/');
   };
 
-  // Debounced search-as-you-type
   useEffect(() => {
-    const query = searchQuery.trim();
+    if (!user?.userId) return;
 
-    if (query.length === 0) {
-      setSuggestions([]);
-      setSearching(false);
-      return;
-    }
+    const loadUnread = async () => {
+      try {
+        const res = await messageAPI.getUnreadCount(user.userId);
+        setUnreadCount(res.data.count || 0);
+      } catch (error) {
+        console.error("Error loading unread count:", error);
+      }
+    };
+
+    loadUnread();
+
+    const interval = setInterval(loadUnread, 5000);
+
+    return () => clearInterval(interval);
+  }, [user?.userId]);
+
+// Debounced search-as-you-type
 useEffect(() => {
-  if (!user?.userId) return;
+  const query = searchQuery.trim();
 
-  const loadUnread = async () => {
+  if (query.length === 0) {
+    setSuggestions([]);
+    setSearching(false);
+    return;
+  }
+
+  setSearching(true);
+
+  const timer = setTimeout(async () => {
     try {
-      const res = await messageAPI.getUnreadCount(user.userId);
-      setUnreadCount(res.data.count || 0);
+      const response = await userAPI.searchUsers(query);
+      setSuggestions(response.data || []);
     } catch (error) {
-      console.error('Error loading unread count:', error);
+      console.error("User search failed:", error);
+      setSuggestions([]);
+    } finally {
+      setSearching(false);
+    }
+  }, 350);
+
+  return () => clearTimeout(timer);
+}, [searchQuery]);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      searchBoxRef.current &&
+      !searchBoxRef.current.contains(event.target)
+    ) {
+      setShowSuggestions(false);
     }
   };
 
-  loadUnread();
-  const interval = setInterval(loadUnread, 5000);
-  return () => clearInterval(interval);
-}, [user?.userId]);
+  document.addEventListener("mousedown", handleClickOutside);
 
-    setSearching(true);
-    const timer = setTimeout(async () => {
-      try {
-        const response = await userAPI.searchUsers(query);
-        setSuggestions(response.data || []);
-      } catch (error) {
-        console.error('User search failed:', error);
-        setSuggestions([]);
-      } finally {
-        setSearching(false);
-      }
-    }, 350);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  // Close suggestions dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  return () =>
+    document.removeEventListener("mousedown", handleClickOutside);
+}, []);
 
   const handleSelectUser = (selectedUser) => {
     setSearchQuery('');
@@ -109,7 +119,7 @@ useEffect(() => {
   };
 
   return (
-
+     <>
     <header className="header">
 
       <div className="header-container">
@@ -186,12 +196,12 @@ useEffect(() => {
 
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="logout-btn"
-          >
-            <FaSignOutAlt />
-          </button>
+         <button
+           onClick={() => setShowLogoutConfirm(true)}
+           className="logout-btn"
+         >
+           <FaSignOutAlt />
+         </button>
 
         </div>
 
@@ -256,7 +266,29 @@ useEffect(() => {
       </div>
 
     </header>
-
+    {showLogoutConfirm && (
+      <div className="logout-confirm-overlay">
+        <div className="logout-confirm-box">
+          <h3>Log out?</h3>
+          <p>Are you sure you want to log out of your account?</p>
+          <div className="logout-confirm-actions">
+            <button
+              className="logout-confirm-cancel"
+              onClick={() => setShowLogoutConfirm(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="logout-confirm-ok"
+              onClick={confirmLogout}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+ </>
   );
 };
 

@@ -304,3 +304,64 @@
   padding: 0 4px;
   line-height: 1;
 }
+.logout-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+}
+
+.logout-confirm-box {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.logout-confirm-box h3 {
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.logout-confirm-box p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.logout-confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.logout-confirm-cancel,
+.logout-confirm-ok {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.logout-confirm-cancel {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.logout-confirm-ok {
+  background-color: #e41e3f;
+  color: white;
+}
+
+.logout-confirm-cancel:hover,
+.logout-confirm-ok:hover {
+  opacity: 0.85;
+}
