@@ -2,7 +2,7 @@ services:
   - type: web
     name: clothmarket-backend
     runtime: java
-    rootDir: backend
+    rootDir: cloth-marketplace/backend
     buildCommand: mvn clean package -DskipTests
     startCommand: java -jar target/*.jar
     plan: free
