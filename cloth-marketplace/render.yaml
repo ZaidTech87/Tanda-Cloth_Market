@@ -1,8 +1,6 @@
 services:
   - type: web
     name: clothmarket-backend
-    runtime: java
+    runtime: docker
     rootDir: cloth-marketplace/backend
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/*.jar
     plan: free
