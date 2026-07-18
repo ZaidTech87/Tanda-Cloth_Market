@@ -259,7 +259,7 @@ export const CallProvider = ({ children }) => {
       setMuted(newMuted);
     }
   };
-
+console.log("WebSocket Connected");
   const toggleCamera = () => {
     if (localStream) {
       const newCameraOff = !cameraOff;
